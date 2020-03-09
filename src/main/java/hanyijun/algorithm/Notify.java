@@ -10,9 +10,8 @@ public class Notify {
 
     public static void main(String[] args) throws Exception {
         Notify notify = new Notify();
-        notify.new ThreadEven().start();
         notify.new ThreadOdd().start();
-
+        notify.new ThreadEven().start();
     }
 
     class ThreadEven extends Thread {
@@ -21,8 +20,8 @@ public class Notify {
             synchronized (lock) {
                 for (int i = 2; i <= 100; i += 2) {
                     try {
-//                        isWait = true;
-//                        lock.notify();
+                        isWait = true;
+                        lock.notify();
                         lock.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -38,14 +37,13 @@ public class Notify {
         @Override
         public void run() {
             synchronized (lock) {
-                //为了确保ThreadA已经进入wait状态
-//                while (!isWait) {
-//                    try {
-//                        lock.wait();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
+                while (!isWait) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 for (int i = 1; i < 100; i += 2) {
                     System.out.println(i);
                     lock.notify();
@@ -59,3 +57,4 @@ public class Notify {
         }
     }
 }
+
